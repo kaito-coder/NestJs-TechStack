@@ -31,8 +31,6 @@ export class AuthController {
     const { user } = request;
     const cookie = this.authService.getCookieWithJwtToken(user.id);
     request.res.setHeader('Set-Cookie', cookie);
-    console.log(user);
-
     return user;
   }
   @UseGuards(JwtAuthenticationGuard)

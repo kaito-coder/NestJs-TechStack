@@ -8,12 +8,14 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import JwtAuthenticationGuard from 'src/auth/jwt-authentication.guard';
 import RequestWithUser from 'src/auth/requestWithUser.interface';
+import { PaginationDto } from 'src/ultils/dto/pagination.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -22,12 +24,21 @@ export class PostsController {
   @Post()
   @UseGuards(JwtAuthenticationGuard)
   create(@Body() createPostDto: CreatePostDto, @Req() req: RequestWithUser) {
+    console.log(req.user);
+    console.log(createPostDto);
+
     return this.postsService.create(createPostDto, req.user);
   }
 
   @Get()
   @UseGuards(JwtAuthenticationGuard)
-  findAll() {
+  getPosts(
+    @Query('search') search: string,
+    @Query() { offset, limit, startId }: PaginationDto,
+  ) {
+    if (search) {
+      return this.postsService.searchForPosts(search, offset, limit, startId);
+    }
     return this.postsService.findAll();
   }
 
