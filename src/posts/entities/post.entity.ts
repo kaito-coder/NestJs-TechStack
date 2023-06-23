@@ -3,6 +3,7 @@ import User from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -20,6 +21,7 @@ class Post {
   @Column()
   public content: string;
 
+  @Index('post_authorId_index')
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
 
